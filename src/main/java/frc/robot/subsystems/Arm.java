@@ -10,11 +10,17 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+// import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Arm {
   // The P gain for the PID controller that drives this arm.
@@ -27,7 +33,7 @@ public class Arm {
   // classes for arm movement
   private final Encoder m_encoder =
           new Encoder(Constants.kEncoderAChannel, Constants.kEncoderBChannel);
-  private final PWMSparkMax m_motor = new PWMSparkMax(Constants.kMotorPort);
+  private final CANSparkMax m_motor = new CANSparkMax(0, null);
 
   // classes for simulation
   private final SingleJointedArmSim m_armSim =
@@ -93,6 +99,7 @@ public class Arm {
       m_motor.setVoltage(pidOutput);
     }
   }
+
   public void keepCurrentPosition(double positionTriggerStopped) {
     var pidOutput =
             m_controller.calculate(
@@ -104,11 +111,12 @@ public class Arm {
   public double getCurrentRadians() {
     return m_encoder.getDistance();
   }
+
   public void stop() {
     m_motor.set(0.0);
   }
 
-  public void close() {
+  public void  close() {
     m_motor.close();
     m_encoder.close();
     m_controller.close();

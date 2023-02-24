@@ -9,12 +9,14 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ExampleArmMovement;
 // import edu.wpi.first.wpilibj.TimedRobot;
 
 public class Robot extends TimedRobot {
     private final Joystick m_joystick = new Joystick(0); // change to the variable from Constants.java
 
     private final Arm m_arm = new Arm();
+    private final ExampleArmMovement m_arm_example = new ExampleArmMovement();
 
     @Override
     public void robotInit() {
@@ -36,9 +38,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-//    if (m_autonomousCommand != null) {
-//      m_autonomousCommand.schedule();
-//    }
     }
 
     @Override
@@ -64,24 +63,27 @@ public class Robot extends TimedRobot {
     double armPositionTriggerStopped = Constants.kMinAngleRads; // default value
     @Override
     public void teleopPeriodic() {
+        // if (m_joystick.getTrigger()) {
+        //     // lift the arm
+        //     armPositionTriggerStopped = m_arm.getCurrentRadians(); // update the position value
+        //     m_arm.reachSetpoint();
+        // } else if (m_joystick.getTop()){
+        //     // lower the arm
+        //     armPositionTriggerStopped = m_arm.getCurrentRadians(); // update the position value
+        //     int armMovementSpeed = -5; // -10 < value < 10
+        //     m_arm.movePosition(armMovementSpeed);
+        // } else {
+        //     // keep the current arm position against gravity
+        //     m_arm.keepCurrentPosition(armPositionTriggerStopped);
+        // }
+        // double positionDegree = m_arm.getCurrentRadians();
+        // // debug output
+        // System.out.println(Units.radiansToDegrees(positionDegree));
+        // if (positionDegree < Constants.kMinAngleRads || positionDegree > Constants.kMaxAngleRads) {
+        //     System.out.println("The arm position is too high or too low");
+        // }
         if (m_joystick.getTrigger()) {
-            // lift the arm
-            armPositionTriggerStopped = m_arm.getCurrentRadians(); // update the position value
-            m_arm.reachSetpoint();
-        } else if (m_joystick.getTop()){
-            // lower the arm
-            armPositionTriggerStopped = m_arm.getCurrentRadians(); // update the position value
-            int armMovementSpeed = -5; // -10 < value < 10
-            m_arm.movePosition(armMovementSpeed);
-        } else {
-            // keep the current arm position against gravity
-            m_arm.keepCurrentPosition(armPositionTriggerStopped);
-        }
-        double positionDegree = m_arm.getCurrentRadians();
-        // debug output
-        System.out.println(Units.radiansToDegrees(positionDegree));
-        if (positionDegree < Constants.kMinAngleRads || positionDegree > Constants.kMaxAngleRads) {
-            System.out.println("The arm position is too high or too low");
+            m_arm_example.movePosition();
         }
     }
 
