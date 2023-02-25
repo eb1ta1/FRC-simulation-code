@@ -17,8 +17,8 @@ public class Robot extends TimedRobot {
     private final Joystick m_joystick = new Joystick(0); // change to the variable from Constants.java
 
     // private final Arm m_arm = new Arm();
-    // private final ExampleArmMovement m_arm_example = new ExampleArmMovement();
-    private final IntakeFunctions intake = new IntakeFunctions();
+    private final ExampleArmMovement m_arm_example = new ExampleArmMovement();
+    // private final IntakeFunctions intake = new IntakeFunctions();
 
     @Override
     public void robotInit() {
@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
         // }
 
         if (m_joystick.getTrigger()) {
-            intake.intake(1);
+            m_arm_example.movePosition();
         }
     }
 

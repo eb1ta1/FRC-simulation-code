@@ -8,6 +8,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class ExampleArmMovement {
     private final CANSparkMax m_motor = new CANSparkMax(1, MotorType.kBrushless);
     public void movePosition() {
-        m_motor.setVoltage(0.5);
+        m_motor.setVoltage(1);
     }
 }
