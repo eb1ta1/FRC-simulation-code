@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ExampleArmMovement;
 // import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.subsystems.IntakeFunctions;
 
 public class Robot extends TimedRobot {
     private final Joystick m_joystick = new Joystick(0); // change to the variable from Constants.java
 
-    private final Arm m_arm = new Arm();
-    private final ExampleArmMovement m_arm_example = new ExampleArmMovement();
+    // private final Arm m_arm = new Arm();
+    // private final ExampleArmMovement m_arm_example = new ExampleArmMovement();
+    private final IntakeFunctions intake = new IntakeFunctions();
 
     @Override
     public void robotInit() {
@@ -50,14 +52,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        m_arm.loadPreferences();
+        // m_arm.loadPreferences();
     }
 
 
 
     @Override
     public void simulationPeriodic() {
-        m_arm.simulationPeriodic();
+        // m_arm.simulationPeriodic();
     }
     
     double armPositionTriggerStopped = Constants.kMinAngleRads; // default value
@@ -82,8 +84,9 @@ public class Robot extends TimedRobot {
         // if (positionDegree < Constants.kMinAngleRads || positionDegree > Constants.kMaxAngleRads) {
         //     System.out.println("The arm position is too high or too low");
         // }
+
         if (m_joystick.getTrigger()) {
-            m_arm_example.movePosition();
+            intake.intake(1);
         }
     }
 
@@ -94,14 +97,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void close() {
-        m_arm.close();
+        // m_arm.close();
         super.close();
     }
 
     @Override
     public void disabledInit() {
         // This just makes sure that our simulation code knows that the motor's off.
-        m_arm.stop();
+        // m_arm.stop();
     }
 
     @Override

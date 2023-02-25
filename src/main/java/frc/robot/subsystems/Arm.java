@@ -10,7 +10,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotController;
-// import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -33,7 +33,7 @@ public class Arm {
   // classes for arm movement
   private final Encoder m_encoder =
           new Encoder(Constants.kEncoderAChannel, Constants.kEncoderBChannel);
-  private final CANSparkMax m_motor = new CANSparkMax(0, null);
+  private final PWMSparkMax m_motor = new PWMSparkMax(0);
 
   // classes for simulation
   private final SingleJointedArmSim m_armSim =
