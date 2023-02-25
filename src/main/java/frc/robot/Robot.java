@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
         //     System.out.println("The arm position is too high or too low");
         // }
 
-        if (m_joystick.getTrigger()) {
+        if (m_joystick.getRawButton(1)) {
             m_arm_example.movePosition();
         }
     }
