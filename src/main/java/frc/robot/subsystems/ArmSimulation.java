@@ -22,7 +22,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-public class Arm {
+public class ArmSimulation {
   // The P gain for the PID controller that drives this arm.
   private double m_armKp = Constants.kDefaultArmKp;
   public double m_armSetpointDegrees = Constants.kDefaultArmSetpointDegrees;
@@ -50,7 +50,7 @@ public class Arm {
   private final EncoderSim m_encoderSim = new EncoderSim(m_encoder);
 
   // constructor
-  public Arm() {
+  public ArmSimulation() {
     m_encoder.setDistancePerPulse(Constants.kArmEncoderDistPerPulse);
 
     Preferences.initDouble(Constants.kArmPositionKey, m_armSetpointDegrees);

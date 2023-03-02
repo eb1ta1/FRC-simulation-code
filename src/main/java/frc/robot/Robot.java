@@ -4,14 +4,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.util.Units;
+// e import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Arm;
+// import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ExampleArmMovement;
 // import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.subsystems.IntakeFunctions;
+// import frc.robot.subsystems.IntakeFunctions;
+import frc.robot.subsystems.ArmSubsystem;
 
 public class Robot extends TimedRobot {
     private final Joystick m_joystick = new Joystick(0); // change to the variable from Constants.java
@@ -62,6 +63,7 @@ public class Robot extends TimedRobot {
         // m_arm.simulationPeriodic();
     }
     
+    private final ArmSubsystem arm = new ArmSubsystem();
     double armPositionTriggerStopped = Constants.kMinAngleRads; // default value
     @Override
     public void teleopPeriodic() {
@@ -84,10 +86,14 @@ public class Robot extends TimedRobot {
         // if (positionDegree < Constants.kMinAngleRads || positionDegree > Constants.kMaxAngleRads) {
         //     System.out.println("The arm position is too high or too low");
         // }
-
         if (m_joystick.getRawButton(1)) {
-            m_arm_example.movePosition();
+            arm.raise();
+        } else if (m_joystick.getRawButton(2)) {
+            arm.lower();
+        } else {
+            arm.setSetpoint(arm.getDegrees());
         }
+           
     }
 
     @Override
