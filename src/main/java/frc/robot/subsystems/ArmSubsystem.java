@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.lang.Math;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -10,14 +12,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
-    private final CANSparkMax motor = new CANSparkMax(5, MotorType.kBrushless); // read parameters from Constants
+    private final CANSparkMax motor = new CANSparkMax(5, MotorType.kBrushless); // read parameters from Constants.java
     private final AbsoluteEncoder absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-    private final double maxAngle = -50;
-    private final double minAngle = 150;
-    private final double angleOffset = 110.7;
+    private final double maxAngle = 0;
+    private final double minAngle = 75;
     private final double kp = 0.01;
     private final double minPowerAtLevel = 0.025;
-    private final double minPowerAtExtended = 0.03;
     private final PIDController pid = new PIDController(kp, 0.0, 0.0);
     private double setpoint = minAngle;
     private final double setpointIncrementer = 0.5;
@@ -25,9 +25,9 @@ public class ArmSubsystem extends SubsystemBase {
     private final double maxPIDSpeed = 0.3;
     private double downSpeed = -0.2;
 
-    // Settings
+    // settings
     private final boolean usingPID = true;
-    private final boolean settingMinLevel = true;
+    private final boolean settingMinLevel = true;   
 
     public ArmSubsystem() {
         pid.setTolerance(10.0);
@@ -42,7 +42,6 @@ public class ArmSubsystem extends SubsystemBase {
         } else {
             motorOutput = 0.2;
         }
-
     }
 
     public void lower() {
@@ -69,8 +68,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     private double calculateFeedforward() {
-        ArmFeedforward feedforward = new ArmFeedforward(1.2, 2.0, 0.06, 0.03);
-        return feedforward.calculate(1, 2, 3);
+        ArmFeedforward feedforward = new ArmFeedforward(0.2, 3.9, 0.01);
+        return feedforward.calculate(Math.toRadians(getDegrees()), 1);
     }
 
     public double getPidOutput() {
