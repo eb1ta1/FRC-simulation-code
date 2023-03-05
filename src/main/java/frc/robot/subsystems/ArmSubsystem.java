@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.lang.Math;
+import java.time.chrono.IsoEra;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
@@ -14,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ArmSubsystem extends SubsystemBase {
     private final CANSparkMax motor = new CANSparkMax(5, MotorType.kBrushless); // read parameters from Constants.java
     private final AbsoluteEncoder absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-    private final double minAngle = 0;
+    private final double minAngle = -5;
     private final double maxAngle = 75;
-    private final double kp = 0.01;
+    private final double kp = 0.1;
     private final double minPowerAtLevel = 0.025;
     private final PIDController pid = new PIDController(kp, 0.0, 0.0);
     private double setpoint = minAngle;
@@ -30,7 +31,7 @@ public class ArmSubsystem extends SubsystemBase {
     private final boolean settingMinLevel = false;   
 
     public ArmSubsystem() {
-        pid.setTolerance(10.0);
+        pid.setTolerance(5.0);
         motor.setInverted(false);
         // setSetpoint(minAngle);
     }
@@ -48,6 +49,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void raise() {
+        boolean isRaise = true;
         if (usingPID) {
             setSetpoint(setpoint + setpointIncrementer);
         } else {
@@ -56,6 +58,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void lower() {
+        boolean isLower = true;
         if (usingPID) {
             setSetpoint(setpoint - setpointIncrementer);
         } else {
@@ -79,14 +82,14 @@ public class ArmSubsystem extends SubsystemBase {
         }
     }
 
-
-    private double calculateFeedforward() {
+    private double calculateFeedforward(double velocity) {
+        // velocity should be from -1.0 to 1.0 but I don't know. 
         ArmFeedforward feedforward = new ArmFeedforward(0.2, 3.9, 0.01);
-        return feedforward.calculate(Math.toRadians(getDegrees()), 1);
+        return feedforward.calculate(Math.toRadians(getDegrees()), velocity);
     }
 
     public double getPidOutput() {
-        double speed = pid.calculate(getDegrees(), setpoint) + calculateFeedforward();
+        double speed = pid.calculate(getDegrees(), setpoint); // + calculateFeedforward(1);
         if (setpoint + 10 < getDegrees()) {
             return downSpeed;
         }

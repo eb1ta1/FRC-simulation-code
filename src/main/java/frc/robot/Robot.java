@@ -25,7 +25,9 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
     }
-
+    
+    private final ArmSubsystem arm = new ArmSubsystem();
+    private final IntakeSubsystem intake = new IntakeSubsystem();
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
@@ -37,11 +39,17 @@ public class Robot extends TimedRobot {
             arm.lower();
             // arm.lowerDebug();
         } else if (m_joystick.getRawButton(3)) {
+            arm.stop();
             // intake.intake();
+        // } else if (m_joystick.getRawButton(4)) {
+        //     intake.intake(false);
+        // } else if (m_joystick.getRawButton(6)) {
+        //     intake.intake(true);
+        // } 
         } else {
+            arm.stop();
             // this code should keep current position
             // arm.setSetpoint(arm.getDegrees());
-            arm.stop();
             // intake.stop();
         }
     }
@@ -77,9 +85,6 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {
         // m_arm.simulationPeriodic();
     }
-    
-    private final ArmSubsystem arm = new ArmSubsystem();
-    // private final IntakeSubsystem intake = new IntakeSubsystem();
     double armPositionTriggerStopped = Constants.kMinAngleRads; // default value
     @Override
     public void teleopPeriodic() {
