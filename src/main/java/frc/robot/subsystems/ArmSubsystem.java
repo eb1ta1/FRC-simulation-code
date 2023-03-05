@@ -14,26 +14,37 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ArmSubsystem extends SubsystemBase {
     private final CANSparkMax motor = new CANSparkMax(5, MotorType.kBrushless); // read parameters from Constants.java
     private final AbsoluteEncoder absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-    private final double maxAngle = 0;
-    private final double minAngle = 75;
+    private final double minAngle = 0;
+    private final double maxAngle = 75;
     private final double kp = 0.01;
     private final double minPowerAtLevel = 0.025;
     private final PIDController pid = new PIDController(kp, 0.0, 0.0);
     private double setpoint = minAngle;
-    private final double setpointIncrementer = 0.5;
+    private final double setpointIncrementer = 1;
     private double motorOutput = 0.0;
-    private final double maxPIDSpeed = 0.3;
+    private final double maxPIDSpeed = 0.7;
     private double downSpeed = -0.2;
 
     // settings
     private final boolean usingPID = true;
-    private final boolean settingMinLevel = true;   
+    private final boolean settingMinLevel = false;   
 
     public ArmSubsystem() {
         pid.setTolerance(10.0);
-
         motor.setInverted(false);
-        setSetpoint(minAngle);
+        // setSetpoint(minAngle);
+    }
+
+    public void raiseDebug() {
+        if (usingPID) {
+            motor.set(0.6);
+        }
+    }
+
+    public void lowerDebug() {
+        if (usingPID) {
+            motor.set(-0.6);
+        }
     }
 
     public void raise() {
@@ -55,6 +66,7 @@ public class ArmSubsystem extends SubsystemBase {
     // simply stop
     public void stop() {
         motorOutput = 0.0;
+        motor.set(motorOutput);
     }
 
     public void setSetpoint(double newSetpointValue) {
@@ -66,6 +78,7 @@ public class ArmSubsystem extends SubsystemBase {
             setpoint = newSetpointValue;
         }
     }
+
 
     private double calculateFeedforward() {
         ArmFeedforward feedforward = new ArmFeedforward(0.2, 3.9, 0.01);
@@ -99,7 +112,6 @@ public class ArmSubsystem extends SubsystemBase {
             if (getDegrees() >= maxAngle) motorOutput = 0.0;
             if (getDegrees() <= minAngle) motorOutput = 0.0;
             if (settingMinLevel) motorOutput = minPowerAtLevel;
-            motor.set(motorOutput);
         }
     }
 }
