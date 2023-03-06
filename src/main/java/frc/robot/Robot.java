@@ -8,18 +8,16 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-// import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.ExampleArmMovement;
-// import edu.wpi.first.wpilibj.TimedRobot;
-// import frc.robot.subsystems.IntakeFunctions;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class Robot extends TimedRobot {
     private final Joystick m_joystick = new Joystick(0); // change to the variable from Constants.java
 
     // private final Arm m_arm = new Arm();
-    private final ExampleArmMovement m_arm_example = new ExampleArmMovement();
+    // private final ExampleArmMovement m_arm_example = new ExampleArmMovement();
     // private final IntakeFunctions intake = new IntakeFunctions();
+
+    private final ArmSubsystem arm = new ArmSubsystem();
 
     @Override
     public void robotInit() {
@@ -63,7 +61,6 @@ public class Robot extends TimedRobot {
         // m_arm.simulationPeriodic();
     }
     
-    private final ArmSubsystem arm = new ArmSubsystem();
     double armPositionTriggerStopped = Constants.kMinAngleRads; // default value
     @Override
     public void teleopPeriodic() {
