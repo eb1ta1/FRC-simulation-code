@@ -28,29 +28,41 @@ public class Robot extends TimedRobot {
     
     private final ArmSubsystem arm = new ArmSubsystem();
     private final IntakeSubsystem intake = new IntakeSubsystem();
+    
+    double outtakeDefaultSpeed = 0.2;
+    boolean isIntakeHolding = false;
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         new RobotContainer();
+
+        // // arm
+        // arm.raise(); 
+        // arm.lower(); 
+        // arm.stop();
+        // arm.setSetpoint(arm.getDegrees()); // set custom target degree
+        
+        // // intake and outtake
+        // intake.isHolding = true; // lock the intake to keep holding
+        // intake.moveMotors(0.5, true); // intaking with speed 0.5
+        // intake.moveMotors(0.5, false); // outtaking with speed 0.5
+
+        // // outtaking with acceralation
+        // outtakeDefaultSpeed += 0.1;
+        // intake.moveMotors(outtakeDefaultSpeed, false);
+
         if (m_joystick.getRawButton(1)) {
             arm.raise();
-            // arm.raiseDebug();
         } else if (m_joystick.getRawButton(2)) {
             arm.lower();
-            // arm.lowerDebug();
         } else if (m_joystick.getRawButton(3)) {
-            arm.stop();
-            // intake.intake();
-        // } else if (m_joystick.getRawButton(4)) {
-        //     intake.intake(false);
-        // } else if (m_joystick.getRawButton(6)) {
-        //     intake.intake(true);
-        // } 
-        } else {
-            arm.stop();
-            // this code should keep current position
-            // arm.setSetpoint(arm.getDegrees());
-            // intake.stop();
+            intake.moveMotors(0.5, true);
+        } else if (m_joystick.getRawButton(4)) {
+            if (isIntakeHolding) isIntakeHolding = true;
+        }
+        
+        if (isIntakeHolding) {
+            intake.moveMotors(0.2, true);
         }
     }
 
