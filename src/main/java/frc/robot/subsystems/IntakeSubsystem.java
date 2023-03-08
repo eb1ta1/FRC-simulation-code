@@ -10,8 +10,7 @@ public class IntakeSubsystem extends SubsystemBase{
     public boolean isHolding = false;
 
     public IntakeSubsystem() {
-        leftMotor.follow(rightMotor);
-        leftMotor.setInverted(true);
+        leftMotor.follow(rightMotor, true);
     }
 
     // speed must be set between 0.0 to 1.0
@@ -28,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase{
             if (isIntake) {
                 rightMotor.set(speed);
             } else {
-                rightMotor.set(-1 * speed);
+                rightMotor.set(speed);
             }
         }
     }

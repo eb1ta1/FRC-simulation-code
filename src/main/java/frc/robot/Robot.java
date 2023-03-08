@@ -11,9 +11,18 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import frc.robot.subsystems.Arm;
 // import frc.robot.subsystems.ExampleArmMovement;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.NewArmSubsystem;
 // import edu.wpi.first.wpilibj.TimedRobot;
 // import frc.robot.subsystems.IntakeFunctions;
 import frc.robot.subsystems.ArmSubsystem;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import java.lang.Math;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 
 public class Robot extends TimedRobot {
     private final Joystick m_joystick = new Joystick(0); // change to the variable from Constants.java
@@ -22,52 +31,39 @@ public class Robot extends TimedRobot {
     // private final ExampleArmMovement m_arm_example = new ExampleArmMovement();
     // private final IntakeFunctions intake = new IntakeFunctions();
 
+    // public final CANSparkMax motor = new CANSparkMax(5, MotorType.kBrushless); // read parameters from Constants.java
+    // public SparkMaxAbsoluteEncoder absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+
     @Override
     public void robotInit() {
+        // absoluteEncoder.setZeroOffset(0);
     }
     
-    private final ArmSubsystem arm = new ArmSubsystem();
+    // private final ArmSubsystem arm = new ArmSubsystem();
     private final IntakeSubsystem intake = new IntakeSubsystem();
-    
+    private final NewArmSubsystem newArm = new NewArmSubsystem();
     double outtakeDefaultSpeed = 0.2;
     boolean isIntakeHolding = false;
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         new RobotContainer();
-
-        // // arm
-        // arm.raise(); 
-        // arm.lower(); 
-        // arm.stop();
-        // arm.setSetpoint(arm.getDegrees()); // set custom target degree
+        newArm.getDegrees();
         
-        // // intake and outtake
-        // intake.isHolding = true; // lock the intake to keep holding
-        // intake.moveMotors(0.5, true); // intaking with speed 0.5
-        // intake.moveMotors(0.5, false); // outtaking with speed 0.5
+        // arm.debugGetDegrees();
+        // arm.debugGetDegrees();
+        // // default mode (idle)
+        // arm.raiseDebug();
+        // intake.stop();
 
-        // // outtaking with acceralation
-        // outtakeDefaultSpeed += 0.1;
-        // intake.moveMotors(outtakeDefaultSpeed, false);
-
-        // default mode (idle)
-        arm.idle();
-        intake.idle();
-
-        if (m_joystick.getRawButton(1)) {
-            arm.raise();
-        } else if (m_joystick.getRawButton(2)) {
-            arm.lower();
-        } else if (m_joystick.getRawButton(3)) {
-            intake.moveMotors(0.5, true);
-        } else if (m_joystick.getRawButton(4)) {
-            if (isIntakeHolding) isIntakeHolding = true;
-        } 
-
-        if (isIntakeHolding) {
-            intake.moveMotors(0.2, true);
-        }
+        // if (m_joystick.getRawButton(1)) {
+        //     arm.raiseDebug();
+        // } else if (m_joystick.getRawButton(2)) {
+        //     // arm.lower();
+        // } else if (m_joystick.getRawButton(3)) {
+        //     intake.moveMotors(0.5, true);
+        // } else if (m_joystick.getRawButton(4)) {
+        // }
     }
 
     @Override
@@ -104,21 +100,7 @@ public class Robot extends TimedRobot {
     double armPositionTriggerStopped = Constants.kMinAngleRads; // default value
     @Override
     public void teleopPeriodic() {
-        // if (m_joystick.getRawButton(1)) {
-        //     // arm.raise();
-        //     arm.raiseDebug();
-        // } else if (m_joystick.getRawButton(2)) {
-        //     // arm.lower();
-        //     arm.lowerDebug();
-        // } else if (m_joystick.getRawButton(3)) {
-        //     arm.stop();
-        //     // intake.intake();
-        // } else {
-        //     // this code should keep current position
-        //     // arm.setSetpoint(arm.getDegrees());
-        //     arm.stop();
-        //     // intake.stop();
-        // }
+
     }
 
     @Override
@@ -135,7 +117,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         // This just makes sure that our simulation code knows that the motor's off.
-        arm.stop();
+        // arm.stop();
     }
 
     @Override

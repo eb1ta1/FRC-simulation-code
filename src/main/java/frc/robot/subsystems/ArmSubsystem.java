@@ -4,6 +4,7 @@ package frc.robot.subsystems;
 // import java.time.chrono.IsoEra;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ArmSubsystem extends SubsystemBase {
     private final CANSparkMax motor = new CANSparkMax(5, MotorType.kBrushless); // read parameters from Constants.java
     private final AbsoluteEncoder absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+    private final RelativeEncoder relativeEncoder = motor.getEncoder();
     private final double minAngle = 0;
     private final double maxAngle = 75;
     private final double kp = 0.5;
@@ -33,7 +35,7 @@ public class ArmSubsystem extends SubsystemBase {
     private final boolean usingPID = true;
 
     public ArmSubsystem() {
-        absoluteEncoder.setZeroOffset(0);
+        absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
         pid.setTolerance(5.0);
         motor.setInverted(false);
         // setSetpoint(minAngle);
@@ -71,8 +73,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // simply stop
     public void stop() {
-        motorOutput = 0.0;
-        motor.set(motorOutput);
+        motor.set(0.0);
     }
 
     public void idle() {
@@ -109,10 +110,16 @@ public class ArmSubsystem extends SubsystemBase {
     public double getDegrees() {
         // double EncoderDistanceConversionFactor = (2.0 * Math.PI) / (double) 42; 
         // absoluteEncoder.setPositionConversionFactor(EncoderDistanceConversionFactor);
-        double degree = (absoluteEncoder.getPosition() - 0.5) * -360.0;
-        SmartDashboard.putNumber("Encoder Position", degree);
-        System.out.println(degree);
+        double degree = (relativeEncoder.getPosition()) * 360.0;
+        // SmartDashboard.put Number("Encoder Position", degree);
+        // System.out.println(degree);
         return degree;
+    }
+
+    public void debugGetDegrees() {
+        double degree = (absoluteEncoder.getPosition());
+        // SmartDashboard.putNumber("Encoder Position", degree);
+        System.out.println("Debug || Rotation is " + degree);
     }
 
     public boolean atSetpoint() {
