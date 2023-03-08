@@ -51,6 +51,10 @@ public class Robot extends TimedRobot {
         // outtakeDefaultSpeed += 0.1;
         // intake.moveMotors(outtakeDefaultSpeed, false);
 
+        // default mode (idle)
+        arm.idle();
+        intake.idle();
+
         if (m_joystick.getRawButton(1)) {
             arm.raise();
         } else if (m_joystick.getRawButton(2)) {
@@ -59,8 +63,8 @@ public class Robot extends TimedRobot {
             intake.moveMotors(0.5, true);
         } else if (m_joystick.getRawButton(4)) {
             if (isIntakeHolding) isIntakeHolding = true;
-        }
-        
+        } 
+
         if (isIntakeHolding) {
             intake.moveMotors(0.2, true);
         }

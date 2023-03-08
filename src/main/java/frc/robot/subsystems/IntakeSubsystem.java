@@ -38,4 +38,9 @@ public class IntakeSubsystem extends SubsystemBase{
         rightMotor.set(0);
         leftMotor.set(0);
     }
+
+    public void idle() {
+        rightMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        leftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    }
 }

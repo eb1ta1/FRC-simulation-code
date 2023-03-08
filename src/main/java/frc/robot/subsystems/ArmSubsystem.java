@@ -33,6 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
     private final boolean usingPID = true;
 
     public ArmSubsystem() {
+        absoluteEncoder.setZeroOffset(0);
         pid.setTolerance(5.0);
         motor.setInverted(false);
         // setSetpoint(minAngle);
@@ -74,6 +75,10 @@ public class ArmSubsystem extends SubsystemBase {
         motor.set(motorOutput);
     }
 
+    public void idle() {
+        motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    }
+
     public void setSetpoint(double newSetpointValue) {
         if (newSetpointValue > maxAngle) {
             setpoint = maxAngle;
@@ -102,8 +107,12 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public double getDegrees() {
-        SmartDashboard.putNumber("Encoder Position", absoluteEncoder.getPosition());
-        return absoluteEncoder.getPosition();
+        // double EncoderDistanceConversionFactor = (2.0 * Math.PI) / (double) 42; 
+        // absoluteEncoder.setPositionConversionFactor(EncoderDistanceConversionFactor);
+        double degree = (absoluteEncoder.getPosition() - 0.5) * -360.0;
+        SmartDashboard.putNumber("Encoder Position", degree);
+        System.out.println(degree);
+        return degree;
     }
 
     public boolean atSetpoint() {
