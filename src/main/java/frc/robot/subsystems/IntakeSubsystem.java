@@ -32,6 +32,20 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
+    public void intake(double intakeSpeed) {
+        if (intakeSpeed >= 0.8) {
+            leftMotor.set(intakeSpeed);
+            rightMotor.set(-intakeSpeed);
+        }
+    }
+    public void outtake(double outtakeSpeed) {
+        if (outtakeSpeed >= 0.8) {
+            outtakeSpeed = 0.8;
+        }
+        leftMotor.set(-outtakeSpeed);
+        rightMotor.set(outtakeSpeed);
+    }
+    
     // simply stop
     public void stop() {
         rightMotor.set(0);
