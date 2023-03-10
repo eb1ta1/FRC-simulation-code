@@ -15,6 +15,10 @@ import frc.robot.subsystems.NewArmSubsystem;
 // import edu.wpi.first.wpilibj.TimedRobot;
 // import frc.robot.subsystems.IntakeFunctions;
 import frc.robot.subsystems.ArmSubsystem;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -34,28 +38,63 @@ public class Robot extends TimedRobot {
     // private final ExampleArmMovement m_arm_example = new ExampleArmMovement();
     // private final IntakeFunctions intake = new IntakeFunctions();
 
-    public final CANSparkMax motor = new CANSparkMax(5, MotorType.kBrushless); // read parameters from Constants.java
-    public SparkMaxAbsoluteEncoder absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-    public RelativeEncoder relativeEncoder = motor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
-
+    // public final CANSparkMax motor = new CANSparkMax(5, MotorType.kBrushless); // read parameters from Constants.java
+    // public SparkMaxAbsoluteEncoder absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+    // public RelativeEncoder relativeEncoder = motor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
+    // public final CANSparkMax rightMotor = new CANSparkMax(9, MotorType.kBrushless);
+    // public final CANSparkMax leftMotor = new CANSparkMax(8, MotorType.kBrushless);
+    
     @Override
     public void robotInit() {
         // absoluteEncoder.setZeroOffset(0);
-        motor.restoreFactoryDefaults();
-        
+        // motor.restoreFactoryDefaults();
+        // final CANSparkMax rightMotor = new CANSparkMax(9, MotorType.kBrushless);
+        // final CANSparkMax leftMotor = new CANSparkMax(8, MotorType.kBrushless);
     }
     
-    // private final ArmSubsystem arm = new ArmSubsystem();
+    // private final NewArmSubsystem arm = new NewArmSubsystem();
     private final IntakeSubsystem intake = new IntakeSubsystem();
-    // private final NewArmSubsystem newArm = new NewArmSubsystem();
-    double outtakeDefaultSpeed = 0.2;
+    //private final ElevatorSubsytem evs = new ElevatorSubsytem();
+    private final NewArmSubsystem newArm = new NewArmSubsystem();
+    // double outtakeDefaultSpeed = 0.2;
     boolean isIntakeHolding = false;
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         new RobotContainer();
-        double v = relativeEncoder.getPosition();
-        System.out.println("Relative " + v);
+        // double v = relativeEncoder.getPosition();
+        // System.out.println("Relative " + v);
+        // intake.leftMotor.setInverted(true);
+        // arm.getDegrees();
+
+        if (m_joystick.getRawButton(5)) {
+            intake.intake();
+        } else if (m_joystick.getRawButton(3)) {
+            intake.outtake();
+        } else if (m_joystick.getRawButton(4)) {
+            intake.slowly();
+        }
+
+        if (m_joystick.getRawButton(1)) {
+            // arm.debugRaise();
+            newArm.debugRaise();
+        } else if (m_joystick.getRawButton(2)) {
+            newArm.debugLower();
+        }
+        else {
+            intake.stop();
+            // arm.stop();
+            newArm.stop();
+        }
+       /**  if (m_joystick.getRawButton(6)){
+            evs.eup();
+        }
+        else if (m_joystick.getRawButton(4)){
+            evs.eup();
+        }
+        else {
+            evs.stop();
+        } */
         // arm.debugGetDegrees();
         // arm.debugGetDegrees();
         // // default mode (idle)
@@ -71,7 +110,7 @@ public class Robot extends TimedRobot {
         // } else if (m_joystick.getRawButton(4)) {
         // }
         
-        motor.set(0.5);
+        // motor.set(0.5);
     }
 
     @Override
@@ -104,7 +143,7 @@ public class Robot extends TimedRobot {
     @Override
     public void simulationPeriodic() {
         // m_arm.simulationPeriodic();
-        motor.set(1.0);
+        // motor.set(1.0);
     }
     double armPositionTriggerStopped = Constants.kMinAngleRads; // default value
     @Override

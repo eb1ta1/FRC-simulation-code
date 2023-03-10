@@ -87,7 +87,7 @@ public class NewArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Encoder Position", degree);
         // System.out.println("Absolute " + absoluteEncoder.getPosition());
         System.out.println("Relative " + relativeEncoder.getPosition());
-        SmartDashboard.putNumber("Relative Encoder", relativeEncoder.getPosition());
+        SmartDashboard.putNumber("Relative Encoder", relativeEncoder.getPosition()*360);
         return relativeEncoder.getPosition() * 360;
     }
     // Move
