@@ -1,138 +1,106 @@
 package frc.robot.subsystems;
 
-// import java.lang.Math;
-// import java.time.chrono.IsoEra;
-
+import java.lang.Math;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-// import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 public class ArmSubsystem extends SubsystemBase {
     private final CANSparkMax motor = new CANSparkMax(5, MotorType.kBrushless); // read parameters from Constants.java
+    public RelativeEncoder relativeEncoder = motor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
     private final AbsoluteEncoder absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-    private final RelativeEncoder relativeEncoder = motor.getEncoder();
     private final double minAngle = 0;
     private final double maxAngle = 75;
+    private final double maxMotorSpeed = 0.8;
+    private final double defaultLowerSpeed = 0.5;
     private final double kp = 0.5;
     private final double ki = 0.0;
     private final double kd = 0.1;
-    // private final double angleOffset = 0;
     private final PIDController pid = new PIDController(kp, ki, kd);
+
+    // default position
     private double setpoint = minAngle;
     private final double setpointIncrementer = 1;
-    private double motorOutput = 0.0;
-    private final double maxPIDSpeed = 0.7;
-    private double downSpeed = -0.3;
-
-    // settings
-    private final boolean usingPID = true;
 
     public ArmSubsystem() {
-        absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
-        pid.setTolerance(5.0);
-        motor.setInverted(false);
-        // setSetpoint(minAngle);
+        absoluteEncoder.setZeroOffset(0);
+        pid.setTolerance(1);
     }
 
-    public void raiseDebug() {
-        if (usingPID) {
-            motor.set(0.6);
-        }
+    // Debug functions
+    public void debugRaise() {
+        motor.set(0.6);
     }
 
-    public void lowerDebug() {
-        if (usingPID) {
-            motor.set(-0.6);
-        }
+    public void debugLower() {
+        motor.set(0.6);
+    }
+// Idle function
+    public void idleMode() {
+        motor.setIdleMode(IdleMode.kBrake);
     }
 
-    public void raise() {
-        // boolean isRaise = true;
-        if (usingPID) {
-            setSetpoint(setpoint + setpointIncrementer);
-        } else {
-            motorOutput = 0.2;
-        }
-    }
-
-    public void lower() {
-        // boolean isLower = true;
-        if (usingPID) {
-            setSetpoint(setpoint - setpointIncrementer);
-        } else {
-            motorOutput = -0.2;
-        }
-    }
-
-    // simply stop
+    // Stop
     public void stop() {
-        motor.set(0.0);
+        motor.set(0);
     }
 
-    public void idle() {
-        motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    }
+    // Setpoint vertification
+    public double setPosition(double setpoint) {
+        double vertifiedSetpoint;
 
-    public void setSetpoint(double newSetpointValue) {
-        if (newSetpointValue > maxAngle) {
-            setpoint = maxAngle;
-        } else if (newSetpointValue < minAngle) {
-            setpoint = minAngle;
+        if (setpoint >= maxAngle) {
+            vertifiedSetpoint = maxAngle;
+        } else if (setpoint <= minAngle) {
+            vertifiedSetpoint = minAngle;
         } else {
-            setpoint = newSetpointValue;
+            vertifiedSetpoint = setpoint;
         }
+
+        return vertifiedSetpoint;
     }
 
-    // private double calculateFeedforward(double velocity) {    
-    //     double velocity = absoluteEncoder.getVelocity();
-    //     ArmFeedforward feedforward = new ArmFeedforward(0.2, 3.9, 0.01);
-    //     return feedforward.calculate(Math.toRadians(getDegrees()), velocity);
-    // }
-
+    // Get speed from PID
     public double getPidOutput() {
-        double speed = pid.calculate(getDegrees(), setpoint); // + calculateFeedforward(1);
+        double speed = pid.calculate(getDegrees(), setpoint);
         if (setpoint + 10 < getDegrees()) {
-            return downSpeed;
+            speed = defaultLowerSpeed;
         }
-        if (speed >= maxPIDSpeed) {
-            return maxPIDSpeed;
+        if (speed >= maxMotorSpeed) {
+            speed = maxMotorSpeed;
         }
         return speed;
     }
 
+    // Get current degree
     public double getDegrees() {
-        // double EncoderDistanceConversionFactor = (2.0 * Math.PI) / (double) 42; 
-        // absoluteEncoder.setPositionConversionFactor(EncoderDistanceConversionFactor);
-        double degree = (relativeEncoder.getPosition()) * 360.0;
-        // SmartDashboard.put Number("Encoder Position", degree);
-        // System.out.println(degree);
-        return degree;
-    }
+        double degree = absoluteEncoder.getPosition() * 360.0;
+        SmartDashboard.putNumber("Encoder Position", degree);
+        // System.out.println("Absolute " + absoluteEncoder.getPosition());
+        System.out.println("Relative " + relativeEncoder.getPosition());
 
-    public void debugGetDegrees() {
-        double degree = (absoluteEncoder.getPosition());
-        // SmartDashboard.putNumber("Encoder Position", degree);
-        System.out.println("Debug || Rotation is " + degree);
-    }
+        double result = relativeEncoder.getPosition() * (2.0 * Math.PI / 100.0) + Math.toRadians(-90);
+        SmartDashboard.putNumber("Relative Encoder", result);
 
-    public boolean atSetpoint() {
-        return pid.atSetpoint();
+        return result;
+    }
+    // Move
+    public void raise() {
+        setpoint = setPosition(getDegrees() + setpointIncrementer);
+    }
+    public void lower() {
+        setpoint = setPosition(getDegrees() - setpointIncrementer);
     }
 
     @Override
     public void periodic() {
-        if (usingPID) {
-            motor.set(getPidOutput());
-        } else {
-            if (getDegrees() >= maxAngle) motorOutput = 0.0;
-            if (getDegrees() <= minAngle) motorOutput = 0.0;
-        }
+        motor.set(getPidOutput());
     }
 }

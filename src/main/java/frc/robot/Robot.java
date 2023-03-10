@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 // import frc.robot.subsystems.Arm;
 // import frc.robot.subsystems.ExampleArmMovement;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.NewArmSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 // import edu.wpi.first.wpilibj.TimedRobot;
 // import frc.robot.subsystems.IntakeFunctions;
 import frc.robot.subsystems.ArmSubsystem;
@@ -32,18 +32,9 @@ import java.text.DecimalFormat;
 
 
 public class Robot extends TimedRobot {
-    private final Joystick m_joystick = new Joystick(0); // change to the variable from Constants.java
-
-    // private final Arm m_arm = new Arm();
-    // private final ExampleArmMovement m_arm_example = new ExampleArmMovement();
-    // private final IntakeFunctions intake = new IntakeFunctions();
-
-    // public final CANSparkMax motor = new CANSparkMax(5, MotorType.kBrushless); // read parameters from Constants.java
-    // public SparkMaxAbsoluteEncoder absoluteEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-    // public RelativeEncoder relativeEncoder = motor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
-    // public final CANSparkMax rightMotor = new CANSparkMax(9, MotorType.kBrushless);
-    // public final CANSparkMax leftMotor = new CANSparkMax(8, MotorType.kBrushless);
-    
+    private final Joystick m_joystick = new Joystick(0); 
+    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final ArmSubsystem newArm = new ArmSubsystem();
     @Override
     public void robotInit() {
         // absoluteEncoder.setZeroOffset(0);
@@ -52,12 +43,6 @@ public class Robot extends TimedRobot {
         // final CANSparkMax leftMotor = new CANSparkMax(8, MotorType.kBrushless);
     }
     
-    // private final NewArmSubsystem arm = new NewArmSubsystem();
-    private final IntakeSubsystem intake = new IntakeSubsystem();
-    //private final ElevatorSubsytem evs = new ElevatorSubsytem();
-    private final NewArmSubsystem newArm = new NewArmSubsystem();
-    // double outtakeDefaultSpeed = 0.2;
-    boolean isIntakeHolding = false;
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
@@ -68,11 +53,11 @@ public class Robot extends TimedRobot {
         // arm.getDegrees();
 
         if (m_joystick.getRawButton(5)) {
-            intake.intake();
+            intake.intake(0.5);
         } else if (m_joystick.getRawButton(3)) {
-            intake.outtake();
+            intake.outtake(0.5);
         } else if (m_joystick.getRawButton(4)) {
-            intake.slowly();
+            intake.holding();
         }
 
         if (m_joystick.getRawButton(1)) {
@@ -86,31 +71,6 @@ public class Robot extends TimedRobot {
             // arm.stop();
             newArm.stop();
         }
-       /**  if (m_joystick.getRawButton(6)){
-            evs.eup();
-        }
-        else if (m_joystick.getRawButton(4)){
-            evs.eup();
-        }
-        else {
-            evs.stop();
-        } */
-        // arm.debugGetDegrees();
-        // arm.debugGetDegrees();
-        // // default mode (idle)
-        // arm.raiseDebug();
-        // intake.stop();
-
-        // if (m_joystick.getRawButton(1)) {
-        //     arm.raiseDebug();
-        // } else if (m_joystick.getRawButton(2)) {
-        //     // arm.lower();
-        // } else if (m_joystick.getRawButton(3)) {
-        //     intake.moveMotors(0.5, true);
-        // } else if (m_joystick.getRawButton(4)) {
-        // }
-        
-        // motor.set(0.5);
     }
 
     @Override

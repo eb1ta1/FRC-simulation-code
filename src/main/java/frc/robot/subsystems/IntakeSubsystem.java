@@ -1,54 +1,55 @@
 package frc.robot.subsystems;
 
-import org.opencv.core.MatOfFloat6;
-
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+// import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class IntakeSubsystem extends SubsystemBase{
+public class IntakeSubsystem extends SubsystemBase {
     public final CANSparkMax rightMotor = new CANSparkMax(9, MotorType.kBrushless);
     public final CANSparkMax leftMotor = new CANSparkMax(8, MotorType.kBrushless);
+    public final double holdingSpeed = 0.1;
+    public final double maxSpeed = 0.7;
+    // public final double minSpeed = -0.7;
 
     public void IntakeSubsystem() {
-        rightMotor.follow(leftMotor, true);
         rightMotor.restoreFactoryDefaults();
         leftMotor.restoreFactoryDefaults();
-    };
+        leftMotor.setIdleMode(IdleMode.kBrake);
+        rightMotor.setIdleMode(IdleMode.kBrake);
+        leftMotor.follow(rightMotor, true);
+    }
 
-    // speed must be set between 0.0 to 1.0
-    // isIntake==false means outtake
-
-
-    public void intake() {
-        // rightMotor.setInverted(true);
-        // leftMotor.setInverted(true);
-
-            rightMotor.set(-.5);
-            leftMotor.set(.5);
-        }
+    public void intake(double strength) {
+        double motorSpinSpeed = limitSpeed(strength);
+        rightMotor.set(motorSpinSpeed);
+    }
     
-    public void outtake() {
-        // rightMotor.setInverted(true);
-      rightMotor.set(.7);
-      leftMotor.set(-.7);
+    public void outtake(double strength) {
+        double motorSpinSpeed = limitSpeed(strength);
+        rightMotor.set(-motorSpinSpeed);
     }
     
     // simply stop
     public void stop() {
         rightMotor.set(0);
-        leftMotor.set(0);
     }
 
-    public void slowly() {
-        rightMotor.set(-0.1);
-        leftMotor.set(0.1);
+    public void holding() {
+        rightMotor.set(holdingSpeed);
     }
 
-    public void idle() {
-        rightMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        leftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    }
+    public double limitSpeed(double speed) {
+        // TODO: Read values from Constants.java
+        double maxSpeed = 0.75; 
+        // double minSpeed = -0.5;
+
+        if (speed > maxSpeed) {
+            speed = maxSpeed;
+        // } else if (speed < minSpeed) {
+        //     speed = minSpeed;
+            }
+        return maxSpeed;
+        }
 }
