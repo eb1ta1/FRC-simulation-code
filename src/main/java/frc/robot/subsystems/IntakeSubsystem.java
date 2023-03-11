@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeSubsystem extends SubsystemBase {
     public final CANSparkMax rightMotor = new CANSparkMax(9, MotorType.kBrushless);
     public final CANSparkMax leftMotor = new CANSparkMax(8, MotorType.kBrushless);
-    public final double holdingSpeed = 0.1;
+    public final double holdingSpeed = -0.1;
     public final double maxSpeed = 0.7;
     // public final double minSpeed = -0.7;
 
-    public void IntakeSubsystem() {
+    public IntakeSubsystem() {
         rightMotor.restoreFactoryDefaults();
         leftMotor.restoreFactoryDefaults();
         leftMotor.setIdleMode(IdleMode.kBrake);

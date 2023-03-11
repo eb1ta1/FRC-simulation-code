@@ -14,62 +14,62 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 // import edu.wpi.first.wpilibj.TimedRobot;
 // import frc.robot.subsystems.IntakeFunctions;
-import frc.robot.subsystems.ArmSubsystem;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+// import frc.robot.subsystems.ArmSubsystem;
+// import com.revrobotics.CANSparkMax;
+// import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 
-import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-import com.revrobotics.SparkMaxRelativeEncoder;
-import com.revrobotics.RelativeEncoder;
-import java.lang.Math;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
+// import com.revrobotics.SparkMaxAbsoluteEncoder;
+// import com.revrobotics.CANSparkMax;
+// import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+// import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+// import com.revrobotics.SparkMaxRelativeEncoder;
+// import com.revrobotics.RelativeEncoder;
+// import java.lang.Math;
+// import java.math.RoundingMode;
+// import java.text.DecimalFormat;
 
 
 
 public class Robot extends TimedRobot {
     private final Joystick m_joystick = new Joystick(0); 
     private final IntakeSubsystem intake = new IntakeSubsystem();
-    private final ArmSubsystem newArm = new ArmSubsystem();
+    private final ArmSubsystem arm = new ArmSubsystem();
+    private final ElevatorSubsystem elevator = new ElevatorSubsystem();
     @Override
-    public void robotInit() {
-        // absoluteEncoder.setZeroOffset(0);
-        // motor.restoreFactoryDefaults();
-        // final CANSparkMax rightMotor = new CANSparkMax(9, MotorType.kBrushless);
-        // final CANSparkMax leftMotor = new CANSparkMax(8, MotorType.kBrushless);
-    }
+    public void robotInit() {}
     
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         new RobotContainer();
-        // double v = relativeEncoder.getPosition();
-        // System.out.println("Relative " + v);
-        // intake.leftMotor.setInverted(true);
-        // arm.getDegrees();
-
+        //arm.getDegrees();
         if (m_joystick.getRawButton(5)) {
             intake.intake(0.5);
         } else if (m_joystick.getRawButton(3)) {
             intake.outtake(0.5);
         } else if (m_joystick.getRawButton(4)) {
             intake.holding();
+        } else {
+            intake.stop();
         }
 
         if (m_joystick.getRawButton(1)) {
             // arm.debugRaise();
-            newArm.debugRaise();
+            arm.debugRaise();
         } else if (m_joystick.getRawButton(2)) {
-            newArm.debugLower();
+            arm.debugLower();
+        } else {
+            arm.stop();
         }
-        else {
-            intake.stop();
-            // arm.stop();
-            newArm.stop();
+
+        if (m_joystick.getRawButton(11)) {
+            elevator.elevatorUp(0.2);
+        } else if (m_joystick.getRawButton(12)) {
+            elevator.elevatorDown(-0.2);
+        } else {
+            elevator.elevatorStop();
         }
     }
 

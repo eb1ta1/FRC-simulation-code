@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import java.lang.Math;
+// import java.lang.Math;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,19 +30,19 @@ public class ArmSubsystem extends SubsystemBase {
     private final double setpointIncrementer = 1;
 
     public ArmSubsystem() {
-        absoluteEncoder.setZeroOffset(0);
         pid.setTolerance(1);
+        motor.restoreFactoryDefaults();
     }
 
     // Debug functions
     public void debugRaise() {
-        motor.set(0.6);
+        motor.set(-0.6);
     }
 
     public void debugLower() {
         motor.set(0.6);
     }
-// Idle function
+    // Idle function
     public void idleMode() {
         motor.setIdleMode(IdleMode.kBrake);
     }
@@ -81,16 +81,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Get current degree
     public double getDegrees() {
-        double degree = absoluteEncoder.getPosition() * 360.0;
-        SmartDashboard.putNumber("Encoder Position", degree);
-        // System.out.println("Absolute " + absoluteEncoder.getPosition());
-        System.out.println("Relative " + relativeEncoder.getPosition());
-
-        double result = relativeEncoder.getPosition() * (2.0 * Math.PI / 100.0) + Math.toRadians(-90);
+        double result = relativeEncoder.getPosition() * 360 % 360; // * (2.0 * Math.PI / 100.0) + Math.toRadians(-90);
+        System.out.println("Relative " + result);
+        System.out.println("Absolute " + absoluteEncoder.getPosition());
         SmartDashboard.putNumber("Relative Encoder", result);
 
         return result;
     }
+
     // Move
     public void raise() {
         setpoint = setPosition(getDegrees() + setpointIncrementer);
@@ -101,6 +99,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        double result = relativeEncoder.getPosition();// * 360 % 360; // * (2.0 * Math.PI / 100.0) + Math.toRadians(-90);
+        System.out.println("Relative " + result);
+        System.out.println("Absolute " + absoluteEncoder.getPosition());
+        SmartDashboard.putNumber("Relative Encoder", result);
         motor.set(getPidOutput());
+        
     }
 }
