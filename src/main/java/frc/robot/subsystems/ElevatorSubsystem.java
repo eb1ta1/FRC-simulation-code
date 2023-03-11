@@ -2,6 +2,19 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+// import java.lang.Math;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -9,6 +22,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ElevatorSubsystem extends SubsystemBase {
     private final CANSparkMax leftMotor = new CANSparkMax(6, MotorType.kBrushless);
     private final CANSparkMax rightMotor = new CANSparkMax(7, MotorType.kBrushless);
+    public RelativeEncoder leftRelativeEncoder = leftMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
+    public RelativeEncoder rightRelativeEncoder = rightMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
+
     public ElevatorSubsystem() {
         leftMotor.restoreFactoryDefaults();
         rightMotor.restoreFactoryDefaults();
@@ -43,5 +59,15 @@ public class ElevatorSubsystem extends SubsystemBase {
             speed = minSpeed;
         }
         return speed;
+    }
+
+    public void periodic() {
+        double rightResult = rightRelativeEncoder.getPosition();// * 360 % 360; // * (2.0 * Math.PI / 100.0) + Math.toRadians(-90);
+        double leftResult = rightRelativeEncoder.getPosition();
+        System.out.println("Relative " + (rightResult));
+        System.out.println("Relative " + (leftResult));
+        // System.out.println("Absolute " + absoluteEncoder.getPosition());
+        SmartDashboard.putNumber("Relative Encoder right", rightResult);
+        SmartDashboard.putNumber("Relative Encoder left", leftResult);
     }
 }
