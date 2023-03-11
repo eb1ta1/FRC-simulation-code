@@ -57,9 +57,11 @@ public class Robot extends TimedRobot {
 
         if (m_joystick.getRawButton(1)) {
             // arm.debugRaise();
-            arm.debugRaise();
+            // arm.debugRaise(0.8);
+            arm.raise();
         } else if (m_joystick.getRawButton(2)) {
-            arm.debugLower();
+            // arm.debugLower(0.8);
+            arm.lower();
         } else {
             arm.stop();
         }

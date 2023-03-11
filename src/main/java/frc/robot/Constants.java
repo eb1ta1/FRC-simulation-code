@@ -3,6 +3,11 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
+  private static final int LEFTA = 1;
+  private static final int LEFTB = 2;
+  private static final int RIGHTA = 3;
+  private static final int RIGHTB = 4;
+  
   public static final int kMotorPort = 0;
   public static final int kEncoderAChannel = 0;
   public static final int kEncoderBChannel = 1;
@@ -24,4 +29,6 @@ public class Constants {
   public static final double kArmLength = Units.inchesToMeters(30);
   public static final double kMinAngleRads = Units.degreesToRadians(-75);
   public static final double kMaxAngleRads = Units.degreesToRadians(255);
+
+  public static final double positionalConversionfactor =  20.1 / 360;
 }
